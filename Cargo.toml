@@ -1,0 +1,32 @@
+[package]
+name = "video_stream"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# rtsp client
+retina = { git  = "https://github.com/scottlamb/retina.git", branch = "next"}
+
+# gstreamer
+gst = {version = "0.18", package = "gstreamer"}
+gst_app = {version = "0.18", package = "gstreamer-app"}
+tracing-gst = {version = "0.3.2", package = "tracing-gstreamer"}
+
+# async runtime
+tokio = {version = "1", features = ["rt-multi-thread", "macros"]}
+futures-util = "0.3"
+
+# parse args and env
+clap = { version = "3", features = ["derive", "env"]}
+dotenv = {version = "0.15", package = "dotenvy", optional = true}
+
+# log and error
+color-eyre = "0.6"
+tracing-subscriber = {version = "0.3", features = ["env-filter"]}
+tracing-error = "0.2"
+tracing = "0.1"
+
+# misk
+url = "2"
