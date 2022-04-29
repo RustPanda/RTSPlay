@@ -73,7 +73,7 @@ async fn main() -> Result<()> {
     {
         // Make video stream
         let video_stream_i = session.streams().iter().position(|s| {
-            if s.media == "video" {
+            if s.media == "video" && s.encoding_name == "h264" {
                 tracing::info!("Using {} video stream", &s.encoding_name);
                 return true;
             }
@@ -86,22 +86,22 @@ async fn main() -> Result<()> {
         }
 
         // Make audio stream
-        let audio_stream_i = session.streams().iter().position(|s| {
-            if s.media == "audio" {
-                tracing::info!("Using {} video stream", &s.encoding_name);
-                return true;
-            }
+        // let audio_stream_i = session.streams().iter().position(|s| {
+        //     if s.media == "audio" {
+        //         tracing::info!("Using {} video stream", &s.encoding_name);
+        //         return true;
+        //     }
 
-            false
-        });
+        //     false
+        // });
 
-        if let Some(i) = audio_stream_i {
-            session.setup(i, SetupOptions::default()).await?;
-        }
+        // if let Some(i) = audio_stream_i {
+        //     session.setup(i, SetupOptions::default()).await?;
+        // }
 
-        if video_stream_i.is_none() && audio_stream_i.is_none() {
-            bail!("Exiting because no video or audio stream was selected; see info log messages above");
-        }
+        // if video_stream_i.is_none() && audio_stream_i.is_none() {
+        //     bail!("Exiting because no video or audio stream was selected; see info log messages above");
+        // }
     }
 
     let pipeline = gst::Pipeline::new(None);
@@ -227,7 +227,7 @@ async fn main() -> Result<()> {
                         let _ = appsrc.end_of_stream()?;
                         break;
                     }
-                    Some(Ok(_)) => unimplemented!(),
+                    Some(Ok(_)) => unreachable!(),
                 }
             }
             msg = bus_stream.next() => {
@@ -243,9 +243,10 @@ async fn main() -> Result<()> {
                     break
                 }
             }
-
         }
     }
+
+    pipeline.set_state(gst::State::Null)?;
 
     Ok(())
 }
